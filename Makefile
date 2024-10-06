@@ -1,5 +1,3 @@
-# Makefile for managin fastapi, testing and linting.
-
 .DEFAULT_GOAL := check
 
 .PHONY: mypy lint check
