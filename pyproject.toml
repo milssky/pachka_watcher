@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "pachka-watcher"
+version = "1.0.0"
+description = "Pachka YaP SLA watcher"
+authors = ["Alexey Potapov <2furius@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
