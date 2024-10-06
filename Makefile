@@ -2,12 +2,20 @@
 
 .DEFAULT_GOAL := check
 
-.PHONY: check
+.PHONY: mypy lint check
+mypy:
+	poetry run mypy pachka_watcher
+
+lint:
+	poetry run flake8 .
+
 check:
-	poetry run mypy pachka_watcher && poetry run flake8 .
+	$(MAKE) mypy && $(MAKE) lint
 
 
 .PHONY: help
 help:
 	@echo Makefile commands:
-	@echo  - check          -- Run mypy and flake8
+	@echo  - check         -- Run mypy and flake8
+	@echo  - lint          -- Run flake8
+	@echo  - mypy          -- Run mypy
