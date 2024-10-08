@@ -17,6 +17,11 @@ wemake-python-styleguide = "^0.19.2"
 mypy = "^1.11.2"
 pytest-cov = "^5.0.0"
 
+
+[tool.poetry.scripts]
+pachka_watcher = "pachka_watcher.main:main"
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
