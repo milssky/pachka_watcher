@@ -14,8 +14,12 @@ class AsyncPachkaClient(AsyncClient):
 
     async def get(self, url: str, **kwargs) -> Response:
         """Выполняет авторизованный GET запрос на заданный url."""
-        return await self.request(HTTPMethod.GET, url, auth=self.auth, **kwargs)
+        response = await self.request(HTTPMethod.GET, url, auth=self.auth, **kwargs)
+        response.raise_for_status()
+        return response
     
     async def post(self, url: str, **kwargs) -> Response:
         """Выполняет авторизованный POST запрос на заданный url."""
-        return await self.request(HTTPMethod.POST, url, auth=self.auth, **kwargs)
+        response = await self.request(HTTPMethod.POST, url, auth=self.auth, **kwargs)
+        response.raise_for_status()
+        return response

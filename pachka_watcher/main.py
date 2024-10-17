@@ -1,15 +1,15 @@
 import asyncio
 
 from pachka_watcher.integrations.client import AsyncPachkaClient
+from pachka_watcher.services.pachka import PachkaService
 from pachka_watcher.settings import settings
 
 
 async def run():
     client = AsyncPachkaClient(settings)
-    result = await client.get(
-        'https://api.pachca.com/api/shared/v1/chats'
-    )
-    print(result.json())
+    service = PachkaService(client)
+    result = await service.get_chat_messages(11020565)
+    print(result)
 
 
 def main():
