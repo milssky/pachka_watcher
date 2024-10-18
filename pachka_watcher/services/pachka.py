@@ -1,7 +1,11 @@
 from datetime import datetime, timedelta
 from http import HTTPMethod
 from json import JSONDecodeError
+<<<<<<< HEAD
 from typing import Sequence, Type, TypeVar
+=======
+from typing import Type, TypeVar
+>>>>>>> 40ddd30a2222e07214cb285f275da7dff0b36a58
 
 from httpx import AsyncClient, Response
 from pydantic import BaseModel
@@ -36,6 +40,7 @@ class PachkaService:
         return response
 
     async def _get_objects(
+<<<<<<< HEAD
         self,
         url: str,
         cls: Type[Model],
@@ -47,13 +52,29 @@ class PachkaService:
         return (cls(**obj) for obj in response["data"])
 
     async def get_chat_messages(self, chat_id: int) -> Sequence[Message]:
+=======
+        self, url: str, cls: Type[Model], method: HTTPMethod = HTTPMethod.GET
+    ) -> list[Model]:
+        if method == HTTPMethod.GET:
+            response = await self.client.get(url)
+        else:
+            response = await self.client.post(url)
+        response = self._check_response(response)
+        return [cls(**obj) for obj in response["data"]]
+
+    async def get_chat_messages(self, chat_id: int) -> list[Message]:
+>>>>>>> 40ddd30a2222e07214cb285f275da7dff0b36a58
         """Возвращает список сообщений для конкретного чата."""
         url = f"{API_ROOT}/messages?chat_id={chat_id}&per={MESSAGES_PER_PAGE}"
         return await self._get_objects(url, Message)
 
+<<<<<<< HEAD
     async def get_recent_messages(
         self, chat_id: int, hours: int = 60
     ) -> Sequence[Message]:
+=======
+    async def get_recent_messages(self, chat_id: int, hours: int = 60) -> list[Message]:
+>>>>>>> 40ddd30a2222e07214cb285f275da7dff0b36a58
         """Возвращает список последних сообщений за hours для конкретного чата."""
         messages = await self.get_chat_messages(chat_id)
         last_messages = (
@@ -62,10 +83,17 @@ class PachkaService:
             if message.created_at.timestamp()
             >= (datetime.now() - timedelta(hours=hours)).timestamp()
             and message.content != ""
+<<<<<<< HEAD
         )
         return last_messages
 
     async def message_reactions(self, message_id: int) -> Sequence[Reaction]:
+=======
+        ]
+        return last_messages
+
+    async def message_reactions(self, message_id: int) -> list[Reaction]:
+>>>>>>> 40ddd30a2222e07214cb285f275da7dff0b36a58
         """Возвращает список реакций для конкретного сообщения."""
         url = f"{API_ROOT}/messages/{message_id}/reactions"
         return await self._get_objects(url, Reaction)
