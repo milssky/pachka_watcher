@@ -1,13 +1,13 @@
 from json import JSONDecodeError
 from datetime import datetime, timedelta
 
-from httpx import AsyncClient
+from httpx import AsyncClient, Response
 
 from pachka_watcher.exceptions import JSONError
 from pachka_watcher.integrations.client import AsyncPachkaClient
-from pachka_watcher.schemas.messages import Message
+from pachka_watcher.schemas.messages import Message, Reaction
 
-API_ROOT = 'https://api.pachca.com/api/shared/v1/'
+API_ROOT = 'https://api.pachca.com/api/shared/v1'
 MESSAGES_PER_PAGE = 50
 
 
@@ -17,12 +17,8 @@ class PachkaService:
     def __init__(self, client: AsyncClient):
         self.client = client
 
-    async def get_chat_messages(self, chat_id: int) -> list[Message]:
-        """Возвращает список сообщений для конкретного чата."""
-        url = f'{API_ROOT}/messages?chat_id={chat_id}&per={MESSAGES_PER_PAGE}'
-
-        response = (await self.client.get(url))
-
+    def _check_response(self, response: Response) -> Response:
+        """Проверяет ответ на корректность."""
         try:
             response = response.json()
         except (JSONDecodeError, TypeError) as e:
@@ -30,6 +26,15 @@ class PachkaService:
 
         if 'data' not in response:
             raise KeyError('Пустой ответ. Нет ключа data')
+        return response
+
+    async def get_chat_messages(self, chat_id: int) -> list[Message]:
+        """Возвращает список сообщений для конкретного чата."""
+        url = f'{API_ROOT}/messages?chat_id={chat_id}&per={MESSAGES_PER_PAGE}'
+
+        response = self._check_response(
+            await self.client.get(url)
+        )
 
         return [Message(**message) for message in response['data']]
     
@@ -45,3 +50,13 @@ class PachkaService:
         ]
         
         return last_messages
+    
+    async def message_reactions(self, message_id: int) -> list[Reaction]:
+        """Возвращает список реакций для конкретного сообщения."""
+        url = f'{API_ROOT}//messages/{message_id}/reactions'
+
+        response = self._check_response(
+            await self.client.get(url)
+        )
+
+        return [Reaction(**reaction) for reaction in response['data']]

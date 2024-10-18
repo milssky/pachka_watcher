@@ -27,3 +27,9 @@ class Message(BaseModel):
     files: list[File]
     thread: Thread | None 
     parent_message_id: int | None
+
+
+class Reaction(BaseModel):
+    user_id: int
+    created_at: datetime
+    code: str
