@@ -8,8 +8,8 @@ from pachka_watcher.settings import settings
 async def run():
     client = AsyncPachkaClient(settings)
     service = PachkaService(client)
-    result = await service.get_chat_messages(11020565)
-    print(result)
+    result = await service.get_recent_messages(10991119)
+    print(*result, sep='\n-----------\n')
 
 
 def main():

@@ -1,4 +1,5 @@
 from json import JSONDecodeError
+from datetime import datetime, timedelta
 
 from httpx import AsyncClient
 
@@ -32,4 +33,15 @@ class PachkaService:
 
         return [Message(**message) for message in response['data']]
     
-    
+    async def get_recent_messages(self, chat_id: int, hours: int = 60) -> list[Message]:
+        """Возвращает список последних сообщений за hours для конкретного чата."""
+        messages = await self.get_chat_messages(chat_id)
+        last_messages = [
+            message
+            for message in messages
+            if message.created_at.timestamp()
+            >= (datetime.now() - timedelta(hours=hours)).timestamp() and 
+            message.content != ''
+        ]
+        
+        return last_messages

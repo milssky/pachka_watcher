@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -21,7 +23,7 @@ class Message(BaseModel):
     chat_id: int
     content: str
     user_id: int
-    created_at: str
+    created_at: datetime
     files: list[File]
     thread: Thread | None 
     parent_message_id: int | None
