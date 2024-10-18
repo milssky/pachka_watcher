@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from http import HTTPMethod
 from json import JSONDecodeError
-from typing import Sequence, Type, TypeVar
+from typing import Generator, Type, TypeVar
 
 from httpx import AsyncClient, Response
 from pydantic import BaseModel
@@ -40,20 +40,20 @@ class PachkaService:
         url: str,
         cls: Type[Model],
         http_method: HTTPMethod = HTTPMethod.GET,
-    ) -> Sequence[Model]:
+    ) -> Generator[Model]:
         """Возвращает список объектов класса cls по url."""
         method = self.method_map.get(http_method)
         response = self._check_response(await method(url))
         return (cls(**obj) for obj in response["data"])
 
-    async def get_chat_messages(self, chat_id: int) -> Sequence[Message]:
+    async def get_chat_messages(self, chat_id: int) -> Generator[Message]:
         """Возвращает список сообщений для конкретного чата."""
         url = f"{API_ROOT}/messages?chat_id={chat_id}&per={MESSAGES_PER_PAGE}"
         return await self._get_objects(url, Message)
 
     async def get_recent_messages(
         self, chat_id: int, hours: int = 60
-    ) -> Sequence[Message]:
+    ) -> Generator[Message]:
         """Возвращает список последних сообщений за hours для конкретного чата."""
         messages = await self.get_chat_messages(chat_id)
         last_messages = (
@@ -65,7 +65,7 @@ class PachkaService:
         )
         return last_messages
 
-    async def message_reactions(self, message_id: int) -> Sequence[Reaction]:
+    async def message_reactions(self, message_id: int) -> Generator[Reaction]:
         """Возвращает список реакций для конкретного сообщения."""
         url = f"{API_ROOT}/messages/{message_id}/reactions"
         return await self._get_objects(url, Reaction)
